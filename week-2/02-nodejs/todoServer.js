@@ -39,11 +39,106 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-  const express = require('express');
-  const bodyParser = require('body-parser');
-  
-  const app = express();
-  
-  app.use(bodyParser.json());
-  
-  module.exports = app;
+const express = require("express");
+const bodyParser = require("body-parser");
+const { v4: uuidv4 } = require("uuid");
+const app = express();
+const port = 4000;
+
+app.use(bodyParser.json());
+
+const todos = [
+  {
+    id: 1,
+    title: "My work",
+    completed: true,
+    desc: "I'll do 30 pushups today.",
+  },
+  {
+    id: 2,
+    title: "Buy groceries",
+    completed: false,
+    description: "I should buy groceries",
+  },
+];
+
+app.get("/", (req, res) => {
+  res.send("TODO app is working...");
+});
+
+app.get("/todos", (req, res) => {
+  if (!todos.length) {
+    res.status(204).json({ msg: "No Content Found." });
+    return;
+  }
+  res.status(200).json({
+    todos,
+  });
+});
+
+app.get("/todos/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const todoItem = todos.find((item) => item.id == id);
+  if (!Object.keys(todoItem).length) {
+    res.status(204).json({ msg: "No Content Found." });
+    return;
+  }
+  res.status(200).json({
+    todoItem,
+  });
+});
+
+app.post("/todos", (req, res) => {
+  const todo = req.body;
+  if (!todo) {
+    res.status(400).json({ msg: "Please send some data." });
+    return;
+  }
+  todos.push({
+    id: uuidv4(),
+    ...todo,
+  });
+  res.json({ msg: "Todo added." });
+});
+
+app.put("/todos/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const todo = req.body;
+
+  if (!Object.keys(todo).length) {
+    res.status(204).json({ msg: "No Content Found." });
+    return;
+  }
+
+  let index;
+  for (let i = 0; i < todos.length; i++) {
+    if (todos[i].id === id) {
+      index = i;
+    }
+  }
+
+  todos[index] = { id, ...todo };
+  res.status(200).json({
+    msg: "Data updated.",
+    data: todos[index],
+  });
+});
+
+app.delete("/todos/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  let index;
+  for (let i = 0; i < todos.length; i++) {
+    if (todos[i].id === id) {
+      index = i;
+    }
+  }
+  todos.splice(index, 1);
+  res.status(200).json({
+    msg: "Data removed.",
+  });
+});
+
+app.listen(port, () => {
+  console.log("server listening to port : ", port);
+});
+module.exports = app;
