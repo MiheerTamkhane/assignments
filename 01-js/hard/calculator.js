@@ -16,6 +16,57 @@
   Once you've implemented the logic, test your code by running
 */
 
-class Calculator {}
+class Calculator {
+  constructor() {
+    this.result = 0;
+  }
+
+  add(number) {
+    this.result += number;
+  }
+
+  subtract(number) {
+    this.result -= number;
+  }
+
+  multiply(number) {
+    this.result *= number;
+  }
+
+  divide(number) {
+    if (number === 0) {
+      throw new Error("error");
+    }
+    this.result /= number;
+  }
+
+  clear() {
+    this.result = 0;
+  }
+
+  getResult() {
+    return this.result;
+  }
+
+  calculate(expression) {
+    const cleanedExpression = expression.replace(/\s+/g, ""); // Remove spaces
+
+    // Check for invalid characters in the expression
+    if (!/^[\d+*/().-]*$/.test(cleanedExpression)) {
+      throw new Error("error");
+    }
+
+    try {
+      let result = parseFloat(eval(cleanedExpression));
+      if (!Number.isFinite(result)) {
+        throw new Error("error");
+      } else {
+        this.result = result;
+      }
+    } catch (error) {
+      throw new Error("error");
+    }
+  }
+}
 
 module.exports = Calculator;
