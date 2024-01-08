@@ -25,7 +25,7 @@ function signJwt(username, password) {
   if (!validData.success) {
     return null;
   }
-  const token = jwt.sign({ username, password }, jwtPassword);
+  const token = jwt.sign({ username }, jwtPassword);
   return token;
 }
 
