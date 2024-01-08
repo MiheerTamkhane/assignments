@@ -64,12 +64,11 @@ function verifyJwt(token) {
  */
 function decodeJwt(token) {
   // Your code here
-  try {
-    const decode = jwt.decode(token);
-    return Object.keys(decode).length > 0;
-  } catch (err) {
-    return false;
+  const decode = jwt.decode(token);
+  if (decode) {
+    return true;
   }
+  return false;
 }
 
 module.exports = {
