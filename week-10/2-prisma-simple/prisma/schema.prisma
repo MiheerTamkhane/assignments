@@ -24,3 +24,10 @@ model Todo {
   description String?
   done        Boolean @default(false)
 }
+
+model Book {
+  id Int @id @default(autoincrement())
+  userId Int
+  name String
+  description String
+}
